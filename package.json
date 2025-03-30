@@ -1,0 +1,42 @@
+{
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/luxon": "^3.4.2",
+    "typescript": "^5.8.2"
+  },
+  "name": "kek-omeeter",
+  "version": "1.0.0",
+  "description": "Discord April fools 2025",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
+    "start": "node ./build/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kamaz91/Kek-oMeeter.git"
+  },
+  "author": "Kamaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kamaz91/Kek-oMeeter/issues"
+  },
+  "homepage": "https://github.com/Kamaz91/Kek-oMeeter#readme",
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.39.0",
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow-models/toxicity": "^1.2.2",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "blob-util": "^2.0.2",
+    "discord.js": "^14.18.0",
+    "jsdom": "^26.0.0",
+    "knex": "^3.1.0",
+    "luxon": "^3.5.0",
+    "sqlite3": "^5.1.7",
+    "translate": "^3.0.1"
+  }
+}
