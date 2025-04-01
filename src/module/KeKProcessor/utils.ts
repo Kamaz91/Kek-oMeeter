@@ -48,3 +48,11 @@ export function bufferToUint32Array(imageBuffer: Buffer, width: number, height: 
 export async function bufferToUint8Array(imageBuffer: Buffer) {
     return node.decodeImage(imageBuffer, 3, "int32", false) as Tensor3D;
 }
+
+export function getHighestProbability(results: { className: string; probability: number }[]): number {
+    if (results.length === 0) {
+        return 0;
+    }
+    let reduced = results.reduce((highest, current) => current.probability > highest.probability ? current : highest);
+    return reduced.probability;
+}
