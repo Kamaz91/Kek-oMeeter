@@ -71,17 +71,17 @@ export default async function process(message: OmitPartialGroupDMChannel<Message
                 return;
             }
 
-            let answer = await message.reply({ embeds: [{ title: "Processing your image...", color: 0xbbbbbb }] });
-
             let img = message.attachments.first();
 
             console.log("Image URL:", img?.url);
             console.log("Type:", img?.contentType);
 
             if (img && ALLOWED_CONTENT_TYPES.includes(img.contentType || "")) {
+                let answer = await message.reply({ embeds: [{ title: "Processing your image...", color: 0x888888 }] });
+
                 let imageBuffer = await downloadFile(img.url);
 
-                if(img.contentType?.includes("webp")) {
+                if (img.contentType?.includes("webp")) {
                     console.log("Image is webp, converting to png...");
                     imageBuffer = await sharp(imageBuffer).png().toBuffer();
                 }
