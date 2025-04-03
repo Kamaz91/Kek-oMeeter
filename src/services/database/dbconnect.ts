@@ -16,7 +16,6 @@ export async function connect(): Promise<{ status: boolean; message: string }> {
   knexConnection = knex(config)
     .on("connection-error", (e) => {
       console.error("Knex database connection-error");
-      console.error(e);
       console.log(e);
     });
   console.log("Are Tables created?", await areTablesCreated());
