@@ -90,27 +90,37 @@ export default async function process(message: OmitPartialGroupDMChannel<Message
 
                 let hash = md5(imageBuffer.toString());
 
-
                 // Classify the image using the classifyImage function
                 console.log("Classifying image...");
                 if (imageData) {
                     let result = await classifyImage(imageData);
-                    for (const element of result) {
-                        element.className.includes("cat") ? score += 10 : score += 0;
-                        element.probability > 0.5;
-                    }
                     let highest = getHighestProbability(result);
+
                     console.log("Highest: ", highest);
                     console.log("Highest: ", highest * 100);
                     console.log("Highest: ", Math.round(highest * 100));
                     score += Math.round(highest * 100);
 
+                    const weightResult = weightedRandom({ positive: highest * 100, negative: 3.33 });
+                    if (weightResult == "negative") {
+                        score = -score;
+                    }
+
                     let embed = new EmbedBuilder();
                     embed.setColor(0x00FF00);
 
+                    if (CursedUsersId.includes(message.author.id) && score > 0) {
+                        score = Math.ceil(score * 0.5);
+                        score += -random(0, 10);
+                    }
+
+                    if (BlessedUsersId.includes(message.author.id)) {
+                        score = Math.ceil(Math.abs(score) * 1.1);
+                    }
+
                     if (await getfileHash(hash)) {
-                        score = Math.ceil(score * 0.1);
-                        embed.setFields({ name: "Duplicate Image", value: `This image has already been processed. Your score has been reduced by 90%.` });
+                        score = 5;
+                        embed.addFields({ name: "Duplicate Image", value: `Image already exists, you have been awarded ${score} points.` });
                         embed.setColor(0xFFFF00);
                     } else {
                         await addFileHash(hash, img.name);
@@ -118,14 +128,6 @@ export default async function process(message: OmitPartialGroupDMChannel<Message
 
                     let userRating = await getRating(message.guildId, message.author.id);
 
-                    if (CursedUsersId.includes(message.author.id)) {
-                        score = Math.ceil(score * 0.05);
-                        score += -random(0, 10);
-                    }
-
-                    if (BlessedUsersId.includes(message.author.id)) {
-                        score = Math.ceil(score * 1.1);
-                    }
 
                     embed.setTitle("Mem Score Updated");
                     embed.setDescription(`**${message.author.username}** has been awarded ${score} points. ${userRating} + ${score}`);
@@ -155,4 +157,20 @@ export default async function process(message: OmitPartialGroupDMChannel<Message
         console.error("Error processing message:", error);
         // Handle the error appropriately, e.g., log it or send a message to the channel
     }
+}
+
+function weightedRandom<T extends string>(weights: Record<T, number>): T {
+    const entries = Object.entries(weights) as [T, number][];
+    const totalWeight = entries.reduce((sum, [, weight]) => sum + weight, 0);
+    const rand = Math.random() * totalWeight;
+
+    let cumulative = 0;
+    for (const [key, weight] of entries) {
+        cumulative += weight;
+        if (rand < cumulative) {
+            return key;
+        }
+    }
+    // This should never happen if weights are positive and non-zero
+    throw new Error("Weighted random selection failed.");
 }
